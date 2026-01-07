@@ -1,0 +1,17 @@
+.p-home {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.p-home__title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.p-home__description {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
