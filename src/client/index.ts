@@ -26,14 +26,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Инициализируем маршрутизатор
   router.init();
-
-  // Проверка API при загрузке
-  fetch('/api/health')
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('API ответ:', data);
-    })
-    .catch((error) => {
-      console.error('Ошибка при обращении к API:', error);
-    });
 });

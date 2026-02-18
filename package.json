@@ -4,9 +4,15 @@
   "description": "Chat application with Express.js and TypeScript",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"tsc --watch\" \"parcel watch src/client/index.html --dist-dir dist/public\" \"node --watch dist/server.js\"",
-    "build": "tsc && parcel build src/client/index.html --dist-dir dist/public",
-    "start": "node dist/server.js",
+    "backend-dev": "tsx watch src/server/index.ts",
+    "frontend-dev": "parcel watch src/client/index.html --dist-dir dist/public",
+    "dev": "concurrently --kill-others-on-exit --prefix-colors \"cyan.bold,magenta.bold\" -n \"BACKEND,FRONTEND\" \"tsx watch src/server/index.ts\" \"parcel watch src/client/index.html --dist-dir dist/public\"",
+    "dev:clean": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true; lsof -ti:1234 | xargs kill -9 2>/dev/null || true; echo 'Порты 3000 и 1234 очищены'",
+    "backend-build": "tsc",
+    "frontend-build": "parcel build src/client/index.html --dist-dir dist/public",
+    "build": "npm run backend-build && npm run frontend-build",
+    "start": "npm run build && node dist/server/index.js",
+    "dev:log": "npm run dev 2>&1 | tee dev-$(date +%Y%m%d-%H%M%S).log",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
@@ -20,14 +26,20 @@
     "@types/node": "^25.0.3",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
+    "buffer": "^6.0.3",
     "concurrently": "^8.2.2",
     "eslint": "^8.56.0",
+    "mongodb-memory-server": "^11.0.1",
     "parcel": "^2.10.3",
     "prettier": "^3.1.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "axios": "^1.13.4",
+    "dotenv": "^17.2.4",
     "express": "^4.18.2",
+    "mongoose": "^9.1.2",
     "templator-evgdudareff": "^1.0.4"
   }
 }
