@@ -11,18 +11,21 @@ export async function loadFixtures() {
         {
           username: 'john_doe',
           email: 'john@example.com',
+          password: 'password123',
           bio: 'Первый тестовый пользователь',
           avatar: 'https://i.pravatar.cc/150?img=1',
         },
         {
           username: 'jane_smith',
           email: 'jane@example.com',
+          password: 'password123',
           bio: 'Вторая тестовая пользовательница',
           avatar: 'https://i.pravatar.cc/150?img=2',
         },
         {
           username: 'alice_wonder',
           email: 'alice@example.com',
+          password: 'password123',
           bio: 'Третий тестовый пользователь',
           avatar: 'https://i.pravatar.cc/150?img=3',
         },

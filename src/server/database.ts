@@ -1,9 +1,5 @@
 import mongoose from 'mongoose';
-import type { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongoMemoryServer as MongoMemoryServerClass } from 'mongodb-memory-server';
-import { config } from 'dotenv';
-
-config();
 
 let mongoMemoryInstance: InstanceType<typeof MongoMemoryServerClass> | null =
   null;
@@ -41,7 +37,9 @@ export async function connectDatabase() {
       await mongoose.connect(mongoUri);
 
       console.log('✅ Подключено к In-Memory MongoDB');
-      console.log(`🔗 Для MongoDB Compass скопируйте строку подключения:\n   ${mongoUri}`);
+      console.log(
+        `🔗 Для MongoDB Compass скопируйте строку подключения:\n   ${mongoUri}`
+      );
       console.log('💡 Данные будут удалены при перезапуске сервера');
       console.log(
         '💡 Для использования реальной БД установите: USE_REAL_MONGODB=true в .env'

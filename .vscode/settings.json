@@ -1,0 +1,52 @@
+{
+  "window.commandCenter": true,
+  "window.zoomLevel": 1,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.autoSave": "afterDelay",
+  "editor.formatOnSave": true,
+  "editor.fontSize": 12,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[python]": {
+    "diffEditor.ignoreTrimWhitespace": false
+  },
+  "search.exclude": {
+    "**/build": true,
+    "**/dist": true
+  },
+  "prettier.bracketSpacing": false,
+  "prettier.useEditorConfig": false,
+  "prettier.bracketSameLine": true,
+  "prettier.singleQuote": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnPaste.enabled": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.detectIndentation": false,
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "mypy-type-checker.args": ["--config-file=${workspaceFolder}/.mypy.toml"],
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "cursor.composer.usageSummaryDisplay": "always",
+  "git.openRepositoryInParentFolders": "never",
+  "explorer.confirmDelete": false,
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.colorTheme": "IntelliJ IDEA New UI Dark",
+  "python.experiments.optInto": [],
+"python.defaultInterpreterPath": ".venv/bin/python",
+"prettier.configPath": ".prettierrc.json",
+}

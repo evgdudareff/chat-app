@@ -1,0 +1,37 @@
+---
+description: Правила шаблонов Templator (templator-evgdudareff) — один корневой узел в ветках if/else
+globs: '**/components/**/*.ts'
+alwaysApply: false
+---
+
+# Templator: условный рендеринг
+
+При использовании **templator-evgdudareff** в шаблонах с `{% if %} ... {% else %} ... {% endif %}` парсер требует, чтобы **содержимое каждой ветки (if и else) было одним корневым узлом**, а не несколькими соседними элементами.
+
+**Неверно** — несколько корневых элементов в ветке (приведёт к ошибке вида "Malware close statement tokens"):
+
+```html
+{% if user %}
+<a href="/settings">...</a>
+<button>Выйти</button>
+{% else %}
+<a href="/login">Войти</a>
+<a href="/register">Регистрация</a>
+{% endif %}
+```
+
+**Верно** — одна обёртка на ветку (один корневой элемент):
+
+```html
+{% if user %}
+<span class="c-header__auth-group">
+  <a href="/settings">...</a>
+  <button>Выйти</button>
+</span>
+{% else %}
+<span class="c-header__auth-group">
+  <a href="/login">Войти</a>
+  <a href="/register">Регистрация</a>
+</span>
+{% endif %}
+```

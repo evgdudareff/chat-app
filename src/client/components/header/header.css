@@ -51,6 +51,10 @@
   flex-shrink: 0;
 }
 
+.c-header__auth-group {
+  display: contents;
+}
+
 .c-header__auth-link {
   text-decoration: none;
   font-weight: 500;
@@ -78,4 +82,28 @@
 .c-header__auth-link--register:hover {
   background-color: #2980b9;
   border-color: #2980b9;
+}
+
+.c-header__auth-link--user {
+  color: #ecf0f1;
+  border: none;
+}
+
+.c-header__auth-link--user:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.c-header__auth-link--logout {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #ff6b6b;
+  border: 2px solid #ff6b6b;
+  cursor: pointer;
+  font: inherit;
+}
+
+.c-header__auth-link--logout:hover {
+  background-color: #ff6b6b;
+  color: #fff;
+  border-color: #ff6b6b;
 }

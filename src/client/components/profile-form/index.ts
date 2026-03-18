@@ -1,12 +1,12 @@
 import { renderTemplate } from '../../utils/templator-utils';
-import { createUser } from './api/userApi';
+import { updateUser } from './api/userApi';
+import type { UserData } from './api/userApi';
 import './profile-form.css';
 
 /**
- * Создаёт форму редактирования профиля
- * @returns {Node} Отрендеренная форма профиля
+ * Создаёт форму редактирования профиля. Если передан user — подставляет его данные в поля.
  */
-export function createProfileForm(): Node {
+export function createProfileForm(user?: UserData): Node {
   const profileTemplate = `<form class="c-form" id="profileForm">
     <h2 class="c-form__title">Мой профиль</h2>
 
@@ -40,8 +40,20 @@ export function createProfileForm(): Node {
   const form = renderTemplate(profileTemplate) as HTMLFormElement;
   const messageDiv = form.querySelector('#formMessage') as HTMLElement;
 
+  if (user) {
+    (form.querySelector('#username') as HTMLInputElement).value = user.username;
+    (form.querySelector('#email') as HTMLInputElement).value = user.email;
+    (form.querySelector('#bio') as HTMLTextAreaElement).value = user.bio ?? '';
+    const img = form.querySelector('.c-profile-form__avatar') as HTMLImageElement;
+    if (img && user.avatar) img.src = user.avatar;
+  }
+
   form.addEventListener('submit', async (e: Event) => {
     e.preventDefault();
+
+    if (!user) {
+      return;
+    }
 
     const payload = {
       username: (form.querySelector('#username') as HTMLInputElement).value,
@@ -53,13 +65,11 @@ export function createProfileForm(): Node {
     try {
       messageDiv.textContent = 'Отправка...';
       messageDiv.className = 'c-form__message c-form__message--loading';
-
-      const response = await createUser(payload);
+      const response = await updateUser(user._id, payload);
 
       if (response.success) {
         messageDiv.textContent = response.message;
         messageDiv.className = 'c-form__message c-form__message--success';
-        form.reset();
       } else {
         messageDiv.textContent = response.message;
         messageDiv.className = 'c-form__message c-form__message--error';
