@@ -1,16 +1,37 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { User } from '../models/userModel.js';
+import type { UserRole } from '../models/userModel.js';
 import type { AuthRequest } from './authController.js';
+
+export function restrictTo(...roles: UserRole[]) {
+  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        message: 'Требуется авторизация',
+      });
+      return;
+    }
+    if (!roles.includes(req.user.role)) {
+      res.status(403).json({
+        success: false,
+        message: 'Недостаточно прав для выполнения действия',
+      });
+      return;
+    }
+    next();
+  };
+}
 
 export async function createUser(req: Request, res: Response) {
   try {
-    const { username, email, bio, avatar } = req.body;
+    const { username, email, password, bio, avatar, role } = req.body;
 
     // Валидация обязательных полей
-    if (!username || !email) {
+    if (!username || !email || !password) {
       res.status(400).json({
         success: false,
-        message: 'Username и email обязательны',
+        message: 'Username, email и password обязательны',
       });
       return;
     }
@@ -28,12 +49,18 @@ export async function createUser(req: Request, res: Response) {
       return;
     }
 
+    const validRoles: UserRole[] = ['user', 'admin'];
+    const userRole: UserRole =
+      role && validRoles.includes(role) ? role : 'user';
+
     // Создаём нового пользователя
     const newUser = new User({
       username,
       email,
+      password,
       bio: bio || '',
       avatar: avatar || '',
+      role: userRole,
     });
 
     const savedUser = await newUser.save();

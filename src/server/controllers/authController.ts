@@ -194,13 +194,15 @@ export async function me(req: AuthRequest, res: Response): Promise<void> {
     res.status(401).json({ success: false, message: 'Не авторизован' });
     return;
   }
-  const { _id, username, email, bio, avatar, createdAt, updatedAt } = req.user;
+  const { _id, username, email, role, bio, avatar, createdAt, updatedAt } =
+    req.user;
   res.status(200).json({
     success: true,
     data: {
       _id: String(_id),
       username,
       email,
+      role: role ?? 'user',
       bio: bio ?? '',
       avatar: avatar ?? '',
       createdAt,

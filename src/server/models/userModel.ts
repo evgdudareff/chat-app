@@ -1,11 +1,14 @@
 import { model, Schema, type Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+export type UserRole = 'user' | 'admin';
+
 interface IUser {
   _id?: Types.ObjectId;
   username: string;
   email: string;
   password: string;
+  role: UserRole;
   passwordChangedAt?: Date;
   bio?: string;
   avatar?: string;
@@ -35,6 +38,11 @@ const userSchema = new Schema<IUser>(
       required: [true, 'Пароль является обязательным полем'],
       minlength: [6, 'Пароль должен содержать минимум 6 символов'],
       select: false,
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
     },
     passwordChangedAt: {
       type: Date,
