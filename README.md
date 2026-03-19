@@ -92,6 +92,27 @@ npm run backend-dev
 npm run frontend-dev
 ```
 
+### MailHog (тестовая почта и сброс пароля)
+
+Для локальной разработки писем (в т. ч. со ссылкой сброса пароля) можно перехватывать через **MailHog** — он принимает SMTP и показывает все письма в веб-интерфейсе.
+
+**Запуск через Docker:**
+
+```bash
+docker run --name mailhog -p 1025:1025 -p 8025:8025 mailhog/mailhog
+```
+
+- **SMTP** (куда шлёт nodemailer): `localhost:1025` — в `.env` должны быть `SMTP_HOST=localhost` и `SMTP_PORT=1025` (как в [`.env.example`](./.env.example)).
+- **Веб-интерфейс** (просмотр писем): откройте в браузере [http://localhost:8025](http://localhost:8025).
+
+Перед запросом сброса пароля убедитесь, что контейнер MailHog запущен и backend перезапущен с актуальным `.env`. Ссылка в письме ведёт на фронт: задайте `FRONTEND_BASE_URL` (в dev с Parcel обычно `http://localhost:1234`).
+
+Чтобы остановить и удалить контейнер:
+
+```bash
+docker stop mailhog && docker rm mailhog
+```
+
 ### Production режим
 
 ```bash
@@ -230,7 +251,7 @@ npm run format:check
 
 ## Переменные окружения
 
-Создайте файл `.env` в корне проекта:
+Создайте файл `.env` в корне проекта. Полный перечень с комментариями — в [`.env.example`](./.env.example) (MongoDB, JWT, SMTP для писем сброса пароля, `FRONTEND_BASE_URL` и т. д.).
 
 ```env
 # Database
@@ -240,6 +261,8 @@ MONGODB_URI=mongodb://localhost:27017/chat-app
 PORT=3000
 NODE_ENV=development
 ```
+
+Для проверки писем локально см. раздел **MailHog** выше и переменные `SMTP_*` в `.env.example`.
 
 ## Разработка
 

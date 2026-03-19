@@ -130,6 +130,10 @@ export class Router {
    * Инициализирует маршрутизатор и отображает начальный маршрут
    */
   public init(): void {
-    this.navigate(this.currentPath);
+    const initialPath =
+      typeof window !== 'undefined' && window.location.pathname
+        ? window.location.pathname
+        : this.currentPath;
+    this.navigate(initialPath);
   }
 }

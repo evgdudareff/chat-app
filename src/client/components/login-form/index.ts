@@ -29,6 +29,10 @@ export function createLoginForm(router: Router): Node {
     <div class="c-form__message" id="formMessage"></div>
 
     <p class="c-form__toggle">
+      <a class="c-form__toggle-link" href="/forgot-password" @click="onLinkClick">Забыли пароль?</a>
+    </p>
+
+    <p class="c-form__toggle">
       <a class="c-form__toggle-link" href="/register" @click="onLinkClick">Нет аккаунта? Зарегистрируйтесь</a>
     </p>
   </form>`;

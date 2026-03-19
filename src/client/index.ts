@@ -2,6 +2,8 @@ import { createHeader } from './components/header';
 import { createHomePage } from './pages/home';
 import { createSettingsPage } from './pages/settings';
 import { createRegisterPage } from './pages/register';
+import { createForgotPasswordPage } from './pages/forgot-password';
+import { createResetPasswordPage } from './pages/reset-password';
 import { createLoginForm } from './components/login-form';
 import { Router } from './utils/router';
 import { showAppLoading, hideAppLoading } from './utils/appLoading';
@@ -40,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   router.registerRoute('/login', () => createLoginForm(router));
   router.registerRoute('/register', () => createRegisterPage(router));
+  router.registerRoute('/forgot-password', () => createForgotPasswordPage());
+  router.registerRoute('/reset-password', () => createResetPasswordPage());
 
   // Отображаем header (гость), затем refreshHeader обновит при первом onRouteLoadEnd
   if (headerContainer) {

@@ -25,6 +25,15 @@ export interface LoginPayload {
   password: string;
 }
 
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface ResetPasswordPayload {
+  token: string;
+  password: string;
+}
+
 export async function signup(payload: SignupPayload): Promise<AuthResponse> {
   try {
     const response = await apiClient.post<AuthResponse>(
@@ -43,6 +52,40 @@ export async function signup(payload: SignupPayload): Promise<AuthResponse> {
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
   try {
     const response = await apiClient.post<AuthResponse>('/auth/login', payload);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      return error.response.data;
+    }
+    throw error;
+  }
+}
+
+export async function forgotPassword(
+  payload: ForgotPasswordPayload
+): Promise<AuthResponse> {
+  try {
+    const response = await apiClient.post<AuthResponse>(
+      '/auth/forgot-password',
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      return error.response.data;
+    }
+    throw error;
+  }
+}
+
+export async function resetPassword(
+  payload: ResetPasswordPayload
+): Promise<AuthResponse> {
+  try {
+    const response = await apiClient.post<AuthResponse>(
+      '/auth/reset-password',
+      payload
+    );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

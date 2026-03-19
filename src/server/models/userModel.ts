@@ -10,6 +10,8 @@ interface IUser {
   password: string;
   role: UserRole;
   passwordChangedAt?: Date;
+  passwordResetTokenHash?: string;
+  passwordResetExpires?: Date;
   bio?: string;
   avatar?: string;
   createdAt?: Date;
@@ -43,6 +45,14 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ['user', 'admin'],
       default: 'user',
+    },
+    passwordResetTokenHash: {
+      type: String,
+      select: false,
+    },
+    passwordResetExpires: {
+      type: Date,
+      select: false,
     },
     passwordChangedAt: {
       type: Date,

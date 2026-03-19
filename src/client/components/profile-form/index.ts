@@ -2,6 +2,7 @@ import { renderTemplate } from '../../utils/templator-utils';
 import { updateUser } from './api/userApi';
 import type { UserData } from './api/userApi';
 import './profile-form.css';
+import { forgotPassword } from '../register-form/api/authApi';
 
 /**
  * Создаёт форму редактирования профиля. Если передан user — подставляет его данные в поля.
@@ -34,11 +35,19 @@ export function createProfileForm(user?: UserData): Node {
     </div>
 
     <button class="c-form__submit" type="submit">Сохранить изменения</button>
+
+    <button class="c-form__submit c-form__submit--secondary" type="button" id="resetPasswordButton">
+      Сбросить пароль (отправить ссылку на email)
+    </button>
+
     <div class="c-form__message" id="formMessage"></div>
   </form>`;
 
   const form = renderTemplate(profileTemplate) as HTMLFormElement;
   const messageDiv = form.querySelector('#formMessage') as HTMLElement;
+  const resetPasswordButton = form.querySelector(
+    '#resetPasswordButton'
+  ) as HTMLButtonElement | null;
 
   if (user) {
     (form.querySelector('#username') as HTMLInputElement).value = user.username;
@@ -80,6 +89,26 @@ export function createProfileForm(user?: UserData): Node {
       console.error('Form submit error:', error);
     }
   });
+
+  if (user && resetPasswordButton) {
+    resetPasswordButton.addEventListener('click', async () => {
+      try {
+        messageDiv.textContent = 'Отправка письма для сброса пароля...';
+        messageDiv.className = 'c-form__message c-form__message--loading';
+
+        const response = await forgotPassword({ email: user.email });
+
+        messageDiv.textContent =
+          response.message ??
+          'Если пользователь с таким email существует, ссылка отправлена на почту';
+        messageDiv.className = 'c-form__message c-form__message--success';
+      } catch (error) {
+        console.error('Profile reset password error:', error);
+        messageDiv.textContent = 'Ошибка при отправке письма для сброса пароля';
+        messageDiv.className = 'c-form__message c-form__message--error';
+      }
+    });
+  }
 
   return form;
 }

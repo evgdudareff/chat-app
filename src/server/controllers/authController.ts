@@ -1,11 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import { User } from '../models/userModel.js';
 import type { IUser } from '../models/userModel.js';
+import { sendPasswordResetEmail } from '../services/emailService.js';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN!;
+const FRONTEND_BASE_URL =
+  process.env.FRONTEND_BASE_URL ?? 'http://localhost:3000';
+const PASSWORD_RESET_EXPIRES_MS = Number(
+  process.env.PASSWORD_RESET_EXPIRES_MS ?? 60 * 60 * 1000
+);
 
 /** Расширение Request для маршрутов с protect */
 export interface AuthRequest extends Request {
@@ -209,4 +216,109 @@ export async function me(req: AuthRequest, res: Response): Promise<void> {
       updatedAt,
     },
   });
+}
+
+export async function forgotPassword(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const genericResponse = {
+    success: true,
+    message:
+      'Если пользователь с таким email существует, ссылка для сброса пароля отправлена на почту',
+  };
+
+  try {
+    const { email } = req.body as { email?: string };
+
+    if (!email) {
+      res.status(200).json(genericResponse);
+      return;
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(200).json(genericResponse);
+      return;
+    }
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(rawToken)
+      .digest('hex');
+
+    user.passwordResetTokenHash = tokenHash;
+    user.passwordResetExpires = new Date(Date.now() + PASSWORD_RESET_EXPIRES_MS);
+    await user.save({ validateBeforeSave: false });
+
+    const resetUrl = `${FRONTEND_BASE_URL.replace(/\/$/, '')}/reset-password?token=${rawToken}`;
+    try {
+      await sendPasswordResetEmail(user.email, resetUrl);
+    } catch (emailError) {
+      console.error('Ошибка при отправке письма сброса пароля:', emailError);
+    }
+
+    res.status(200).json(genericResponse);
+  } catch (error) {
+    console.error('Ошибка в forgotPassword:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка сервера при запросе сброса пароля',
+    });
+  }
+}
+
+export async function resetPassword(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const { token, password } = req.body as {
+      token?: string;
+      password?: string;
+    };
+
+    if (!token || !password) {
+      res.status(400).json({
+        success: false,
+        message: 'Токен и новый пароль обязательны',
+      });
+      return;
+    }
+
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex');
+
+    const user = await User.findOne({
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        message: 'Токен недействителен или истёк',
+      });
+      return;
+    }
+
+    user.password = password;
+    user.passwordResetTokenHash = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Пароль успешно сброшен',
+    });
+  } catch (error) {
+    console.error('Ошибка в resetPassword:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Ошибка сервера при сбросе пароля',
+    });
+  }
 }
